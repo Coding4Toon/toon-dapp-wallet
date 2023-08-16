@@ -18,28 +18,28 @@ function Navbar() {
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
                   <a
-                    href="https://discord.gg/3x3h2z6A63"
+                    href="https://github.com/Coding4Toon"
                     className="text-xl text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Discord
+                    Github
                   </a>
                   <a
-                    href="https://twitter.com/StackUpHQ"
+                    href="https://app.stackup.dev/bounty/wallet-integration-tutorial"
                     className="text-xl text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Twitter
+                    Stack Up
                   </a>
                   <a
-                    href="https://testnets.opensea.io/"
+                    href="https://sepolia.etherscan.io/address/0x393886F4C60a6142A25D1F243B4647FBBd19b1B9"
                     className="text-xl text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Opensea
+                    Contract
                   </a>
                 </div>
               </div>
