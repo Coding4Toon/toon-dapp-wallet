@@ -242,7 +242,16 @@ function App() {
   return (
     <s.Screen>
       <Nav />
-      <div className="header" style={{ backgroundImage: `url(${header})` }}>
+      <div className="header"
+        style={{
+          backgroundImage: `url(${header})`,
+          width: '100%',
+          height: '100vh',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <s.Container flex={1} ai={"center"}>
           <StyledLogo className="logo-txt">Toon</StyledLogo>
           <p className="header-mint-txt text-2xl text-center text-white">ICO LIVE NOW!</p>
