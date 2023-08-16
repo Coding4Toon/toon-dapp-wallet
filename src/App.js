@@ -104,7 +104,8 @@ function App() {
   const dispatch = useDispatch();
   const blockchain = useSelector((state) => state.blockchain);
   const data = useSelector((state) => state.data);
-  const [claimingNft, setClaimingNft] = useState(false);
+  const [buyingTokens, setBuyingTokens] = useState(false);
+  const [mintingERC20, setMintingERC20] = useState(false);
   const [feedback, setFeedback] = useState(`Click buy to mint your NFT.`);
   const [mintAmount, setMintAmount] = useState(1);
   const [CONFIG, SET_CONFIG] = useState({
@@ -126,7 +127,76 @@ function App() {
     SHOW_BACKGROUND: false,
   });
 
-  // Minting an NFT
+  const mintERC20 = () => {
+    console.log("[+] Start with init supply : ", data.totalSupply);
+    let cost = CONFIG.WEI_COST;
+    let gasLimit = CONFIG.GAS_LIMIT;
+    let totalCostWei = String(cost * mintAmount);
+    let totalGasLimit = String(gasLimit * mintAmount);
+    console.log("Cost: ", totalCostWei);
+    console.log("Gas limit: ", totalGasLimit);
+    setFeedback(`Minting your ${CONFIG.NFT_NAME}...`);
+    console.log("[+] Minting...");
+    setMintingERC20(true);
+    console.log("[+] True");
+    blockchain.smartContract.methods
+      .ownerMint(mintAmount)
+      .send({
+        gasLimit: String(totalGasLimit),
+        from: blockchain.account,
+      })
+      .once("error", (err) => {
+        console.log(err);
+        setFeedback("Sorry, something went wrong please try again later.");
+        setMintingERC20(false);
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(
+          `Cool! Now the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`
+        );
+        setMintingERC20(false);
+        dispatch(fetchData(blockchain.account));
+      });
+    console.log("[+] Done");
+  };
+
+  const buyTokens = () => {
+    console.log("[+] Start with init supply:", data.totalSupply);
+
+    let cost = CONFIG.WEI_COST;
+    let gasLimit = CONFIG.GAS_LIMIT;
+    let totalCostWei = String(cost * mintAmount);
+    let totalGasLimit = String(gasLimit * mintAmount);
+
+    console.log("Cost:", totalCostWei);
+    console.log("Gas limit:", totalGasLimit);
+    setFeedback(`Buying your ${CONFIG.NFT_NAME}...`);
+
+    console.log("[+] Buying...");
+    setBuyingTokens(true);
+
+    blockchain.smartContract.methods
+      .buyTokens(mintAmount)
+      .send({
+        gasLimit: totalGasLimit,
+        from: blockchain.account,
+        value: totalCostWei,
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(`Cool! Now the ${CONFIG.NFT_NAME} is yours! Go visit Opensea.io to view it.`);
+        setBuyingTokens(false);
+        dispatch(fetchData(blockchain.account));
+      })
+      .catch((err) => {
+        console.error(err);
+        setFeedback("Sorry, something went wrong. Please try again later.");
+        setBuyingTokens(false);
+      });
+
+    console.log("[+] Done");
+  };
 
   const decrementMintAmount = () => {
     let newMintAmount = mintAmount - 1;
@@ -174,8 +244,8 @@ function App() {
       <Nav />
       <div className="header" style={{ backgroundImage: `url(${header})` }}>
         <s.Container flex={1} ai={"center"}>
-          <StyledLogo className="logo-txt">PolyAliens</StyledLogo>
-          <p className="header-mint-txt text-2xl text-center text-white">MINTING LIVE NOW!</p>
+          <StyledLogo className="logo-txt">Toon</StyledLogo>
+          <p className="header-mint-txt text-2xl text-center text-white">ICO LIVE NOW!</p>
           <s.SpacerSmall />
           <ResponsiveWrapper flex={1} style={{ padding: 24 }} test>
             <s.SpacerLarge />
@@ -271,7 +341,7 @@ function App() {
                       <s.Container ai={"center"} jc={"center"} fd={"row"}>
                         <StyledRoundButton
                           style={{ lineHeight: 0.4, color: "var(--secondary)" }}
-                          disabled={claimingNft ? 1 : 0}
+                          disabled={buyingTokens ? 1 : 0}
                           onClick={(e) => {
                             e.preventDefault();
                             decrementMintAmount();
@@ -293,7 +363,7 @@ function App() {
                           style={{
                             color: "var(--secondary)",
                           }}
-                          disabled={claimingNft ? 1 : 0}
+                          disabled={buyingTokens ? 1 : 0}
                           onClick={(e) => {
                             e.preventDefault();
                             incrementMintAmount();
@@ -305,14 +375,26 @@ function App() {
                       <s.SpacerSmall />
                       <s.Container ai={"center"} jc={"center"} fd={"row"}>
                         <StyledButton
-                          disabled={claimingNft ? 1 : 0}
+                          disabled={mintingERC20 ? 1 : 0}
                           onClick={(e) => {
                             e.preventDefault();
-                            claimNFTs();
+                            mintERC20();
                             getData();
                           }}
                         >
-                          {claimingNft ? "Loading.." : "Buy"}
+                          {mintingERC20 ? "Minting.." : "Mint"}
+                        </StyledButton>
+                      </s.Container>
+                      <s.Container ai={"center"} jc={"center"} fd={"row"}>
+                        <StyledButton
+                          disabled={buyingTokens ? 1 : 0}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            buyTokens();
+                            getData();
+                          }}
+                        >
+                          {buyingTokens ? "Buying.." : "Buy"}
                         </StyledButton>
                       </s.Container>
                     </>
