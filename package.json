@@ -1,7 +1,7 @@
 {
-  "name": "PolyAliens",
+  "name": "Toon ICO",
   "version": "1.0.0",
-  "description": "StackUp's PolyAliens NFT minting dapp.",
+  "description": "Toon's ERC20 minting dapp.",
   "private": true,
   "dependencies": {
     "@headlessui/react": "^1.4.2",
