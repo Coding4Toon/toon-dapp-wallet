@@ -35,8 +35,10 @@ export const fetchData = () => {
       let saleDuration = await contract.methods.SALE_DURATION().call();
       console.log("[+] Data", saleDuration);
       let contractOwner = await contract.methods.owner().call();
-      console.log("[+] Data", contractOwner);
-
+      console.log("[+] Data", contractOwner.toUpperCase());
+      if (contractOwner) {
+        contractOwner = contractOwner.toUpperCase();
+      }
       dispatch(
         fetchDataSuccess({
           totalSupply,

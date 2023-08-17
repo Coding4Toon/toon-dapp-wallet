@@ -9,6 +9,7 @@ import Nav from "./Nav.js";
 
 const truncate = (input, len) => (input.length > len ? `${input.substring(0, len)}...` : input);
 
+
 export const StyledButton = styled.button`
   padding: 10px;
   border-radius: 40px;
@@ -26,6 +27,9 @@ export const StyledButton = styled.button`
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -99,7 +103,6 @@ export const StyledLink = styled.a`
   color: var(--secondary);
   text-decoration: none;
 `;
-
 
 
 function App() {
@@ -392,8 +395,8 @@ function App() {
                       <s.SpacerSmall />
                       <s.Container ai={"center"} jc={"center"} fd={"row"}>
                         <StyledButton
-                          style={{ marginTop: '50px', ...(blockchain.account !== data.contractOwner) ? disabledStyle : {} }}
-                          disabled={(mintingERC20 ? 1 : 0) || (blockchain.account !== data.contractOwner)}
+                          style={{ marginTop: '50px', ...(blockchain.account.toUpperCase() !== data.contractOwner) ? disabledStyle : {} }}
+                          disabled={mintingERC20 || blockchain.account.toUpperCase() !== data.contractOwner}
                           onClick={(e) => {
                             e.preventDefault();
                             mintERC20();
@@ -432,6 +435,7 @@ function App() {
 }
 
 export default App;
+
 
 const disabledStyle = {
   opacity: '0.5',
