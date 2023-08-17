@@ -100,8 +100,11 @@ export const StyledLink = styled.a`
   text-decoration: none;
 `;
 
+
+
 function App() {
   const dispatch = useDispatch();
+  const [owner, setOwner] = useState(null);
   const blockchain = useSelector((state) => state.blockchain);
   const data = useSelector((state) => state.data);
   const [buyingTokens, setBuyingTokens] = useState(false);
@@ -126,6 +129,11 @@ function App() {
     MARKETPLACE_LINK: "",
     SHOW_BACKGROUND: false,
   });
+
+  console.log("[+] Supply", data.totalSupply);
+  console.log("[+] Contract Owner", data.contractOwner);
+  console.log("[+] Wallet connected", blockchain.account);
+  console.log("[+] Sale duration", data.saleDuration);
 
   const mintERC20 = () => {
     console.log("[+] Start with init supply : ", data.totalSupply);
@@ -185,7 +193,7 @@ function App() {
       })
       .then((receipt) => {
         console.log(receipt);
-        setFeedback(`Cool! Now the ${CONFIG.NFT_NAME} is yours! Go visit Opensea.io to view it.`);
+        setFeedback(`Cool! Now the ${CONFIG.NFT_NAME} is yours! Go visit your wallet to view it.`);
         setBuyingTokens(false);
         dispatch(fetchData(blockchain.account));
       })
@@ -384,18 +392,20 @@ function App() {
                       <s.SpacerSmall />
                       <s.Container ai={"center"} jc={"center"} fd={"row"}>
                         <StyledButton
-                          disabled={mintingERC20 ? 1 : 0}
+                          style={{ marginTop: '50px', ...(blockchain.account !== data.contractOwner) ? disabledStyle : {} }}
+                          disabled={(mintingERC20 ? 1 : 0) || (blockchain.account !== data.contractOwner)}
                           onClick={(e) => {
                             e.preventDefault();
                             mintERC20();
                             getData();
                           }}
                         >
-                          {mintingERC20 ? "Minting.." : "Mint"}
+                          {mintingERC20 ? "Minting.." : "Owner Mint"}
                         </StyledButton>
                       </s.Container>
                       <s.Container ai={"center"} jc={"center"} fd={"row"}>
                         <StyledButton
+                          style={{ marginTop: '50px' }}
                           disabled={buyingTokens ? 1 : 0}
                           onClick={(e) => {
                             e.preventDefault();
@@ -403,7 +413,7 @@ function App() {
                             getData();
                           }}
                         >
-                          {buyingTokens ? "Buying.." : "Buy"}
+                          {buyingTokens ? "Buying.." : "ICO Buy"}
                         </StyledButton>
                       </s.Container>
                     </>
@@ -422,3 +432,8 @@ function App() {
 }
 
 export default App;
+
+const disabledStyle = {
+  opacity: '0.5',
+  cursor: 'not-allowed'
+};

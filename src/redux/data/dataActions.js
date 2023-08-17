@@ -1,4 +1,3 @@
-// log
 import store from "../store";
 
 const fetchDataRequest = () => {
@@ -21,35 +20,28 @@ const fetchDataFailed = (payload) => {
   };
 };
 
-// Detect totalSupply of NFTs
-
 export const fetchData = () => {
   return async (dispatch) => {
     dispatch(fetchDataRequest());
     try {
 
-      let totalSupply = await store
-        .getState()
-        .blockchain.smartContract.methods.totalSupply()
-        .call();
+      const state = store.getState();
+      const contract = state.blockchain.smartContract;
 
-      let saleDuration = await store
-        .getState()
-        .blockchain.smartContract.methods.SALE_DURATION()
-        .call();
+      let totalSupply = await contract.methods.totalSupply().call();
+      console.log("[+] Data", totalSupply);
 
-
-
-      // let cost = await store
-      //   .getState()
-      //   .blockchain.smartContract.methods.cost()
-      //   .call();
+      // Assuming SALE_DURATION and owner are public state variables in your contract
+      let saleDuration = await contract.methods.SALE_DURATION().call();
+      console.log("[+] Data", saleDuration);
+      let contractOwner = await contract.methods.owner().call();
+      console.log("[+] Data", contractOwner);
 
       dispatch(
         fetchDataSuccess({
           totalSupply,
           saleDuration,
-          // cost,
+          contractOwner,
         })
       );
     } catch (err) {
